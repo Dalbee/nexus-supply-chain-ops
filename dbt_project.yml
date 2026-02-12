@@ -5,14 +5,11 @@ config-version: 2
 profile: 'default'
 
 model-paths: ["models"]
+macro-paths: ["macros"]
 seed-paths: ["seeds"]
-test-paths: ["tests"]
-target-path: "target"
-
-clean-targets:
-  - "target"
-  - "dbt_packages"
 
 models:
   nexus-supply-chain-ops:
+    +database: workspace           # Forces Unity Catalog 'workspace'
+    +schema: supply_chain_analytics
     +materialized: view
