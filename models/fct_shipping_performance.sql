@@ -1,12 +1,11 @@
 {{ config(
     materialized='table',
-    file_format='delta',
     catalog='workspace',
     schema='supply_chain_analytics'
 ) }}
 
 with shipments as (
-    select * from {{ ref('stg_shipments') }}
+  select * from {{ ref('stg_shipments') }}
 )
 
 select 

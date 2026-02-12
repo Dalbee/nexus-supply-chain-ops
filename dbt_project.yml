@@ -14,8 +14,11 @@ vars:
 
 models:
   nexus-supply-chain-ops:
-    +catalog: workspace          # Added this - Unity Catalog specific
-    +database: workspace         # Kept this for safety
+    +catalog: workspace           # The primary Unity Catalog name
     +schema: supply_chain_analytics
-    staging:
-      +materialized: view
+    +materialized: view           # Default for all models
+    
+    # Specific override for your Gold/Fact layer
+    fct_shipping_performance:
+      +materialized: table
+      +file_format: delta
