@@ -1,25 +1,18 @@
-name: 'nexus_supply_chain_ops'
+name: 'nexus-supply-chain-ops'
 version: '1.0.0'
 config-version: 2
 
 profile: 'default'
 
 model-paths: ["models"]
-analysis-paths: ["analyses"]
-test-paths: ["tests"]
 seed-paths: ["seeds"]
-macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
-
+test-paths: ["tests"]
 target-path: "target"
+
 clean-targets:
   - "target"
   - "dbt_packages"
 
-# This part tells dbt how to build your models in Databricks
 models:
-  nexus_supply_chain_ops:
-    # This makes everything build as a table by default (standard for BI)
-    +materialized: table 
-    staging:
-      +materialized: view # Staging is better as a view to save space
+  nexus-supply-chain-ops:
+    +materialized: view
