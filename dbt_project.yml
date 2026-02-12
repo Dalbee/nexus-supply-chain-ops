@@ -6,19 +6,13 @@ profile: 'default'
 
 model-paths: ["models"]
 macro-paths: ["macros"]
-seed-paths: ["seeds"]
 
-# FORCE everything in this project to use the 'workspace' catalog
+# THIS IS THE KEY: Global variable override
 vars:
-  databricks_catalog: workspace
+  catalog: workspace
 
 models:
   nexus-supply-chain-ops:
-    +catalog: workspace           # The primary Unity Catalog name
+    +catalog: workspace
+    +database: workspace
     +schema: supply_chain_analytics
-    +materialized: view           # Default for all models
-    
-    # Specific override for your Gold/Fact layer
-    fct_shipping_performance:
-      +materialized: table
-      +file_format: delta
