@@ -1,6 +1,6 @@
 sources:
   - name: external_source
-    catalog: workspace # This matches the path of the databricks Bronze Layer (original file)
+    catalog: workspace # This matches the path of the databricks Bronze Layer (original file) # <--- CRITICAL: Change from hive_metastore
     schema: default
     tables:
       - name: raw_supply_chain
