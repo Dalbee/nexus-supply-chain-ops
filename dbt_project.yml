@@ -8,8 +8,14 @@ model-paths: ["models"]
 macro-paths: ["macros"]
 seed-paths: ["seeds"]
 
+# FORCE everything in this project to use the 'workspace' catalog
+vars:
+  databricks_catalog: workspace
+
 models:
   nexus-supply-chain-ops:
-    +database: workspace           # Forces Unity Catalog 'workspace'
+    +catalog: workspace          # Added this - Unity Catalog specific
+    +database: workspace         # Kept this for safety
     +schema: supply_chain_analytics
-    +materialized: view
+    staging:
+      +materialized: view

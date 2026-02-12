@@ -1,6 +1,8 @@
 {{ config(
     materialized='table',
-    file_format='delta'
+    file_format='delta',
+    catalog='workspace',
+    schema='supply_chain_analytics'
 ) }}
 
 with shipments as (
