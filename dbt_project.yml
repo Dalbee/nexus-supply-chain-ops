@@ -1,23 +1,18 @@
-name: 'nexus-supply-chain-ops' # Changed to dashes
+name: 'nexus-supply-chain-ops'
 version: '1.0.0'
 config-version: 2
 
 profile: 'default'
 
 model-paths: ["models"]
-analysis-paths: ["analyses"]
-test-paths: ["tests"]
 seed-paths: ["seeds"]
-macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
-
+test-paths: ["tests"]
 target-path: "target"
+
 clean-targets:
   - "target"
   - "dbt_packages"
 
-# This section MUST match the name at the top
 models:
-  nexus-supply-chain-ops: # Changed to dashes
-    staging:
-      +materialized: view
+  nexus-supply-chain-ops:
+    +materialized: view
