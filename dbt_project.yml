@@ -6,10 +6,20 @@ profile: 'default'
 
 model-paths: ["models"]
 macro-paths: ["macros"]
-seed-paths: ["seeds"]
+
+# THIS IS THE KEY: Global variable override
+vars:
+  catalog: workspace
 
 models:
   nexus-supply-chain-ops:
-    +database: workspace           # Forces Unity Catalog 'workspace'
+    +catalog: workspace
+    +database: workspace
     +schema: supply_chain_analytics
-    +materialized: view
+
+# Add this section to force tests to look in the same place
+tests:
+  nexus-supply-chain-ops:
+    +catalog: workspace
+    +database: workspace
+    +schema: supply_chain_analytics
