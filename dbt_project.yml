@@ -16,3 +16,10 @@ models:
     +catalog: workspace
     +database: workspace
     +schema: supply_chain_analytics
+
+# Add this section to force tests to look in the same place
+tests:
+  nexus-supply-chain-ops:
+    +catalog: workspace
+    +database: workspace
+    +schema: supply_chain_analytics
