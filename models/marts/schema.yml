@@ -19,14 +19,58 @@ models:
           # We keep 'not_null' to ensure every record is linked to a valid transaction.
           - not_null
 
+  - name: dim_date
+    description: "Standardized calendar dimension for Time Intelligence analytics."
+    columns:
+      - name: date_key
+        description: "Primary key (Date) for the calendar table."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_products
+    description: "Dimension table containing product and category details."
+    columns:
+      - name: product_key
+        description: "Surrogate key for unique products."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_locations
+    description: "Dimension table for geographical order data."
+    columns:
+      - name: location_key
+        description: "Surrogate key for unique country/region combinations."
+        tests:
+          - unique
+          - not_null
+
   - name: fct_shipping_performance
-    description: "The central fact table for shipping metrics"
+    description: "The central fact table for shipping metrics. Grain is one row per line item."
     columns:
       - name: shipment_item_id
         description: "Foreign key linking back to staging, ensuring every fact row is traceable."
         tests:
           - unique
           - not_null
+
+      - name: order_date
+        description: "The date the order was placed. Used for Power BI relationships."
+        tests:
+          - not_null
+          # RELATIONSHIP TEST: Ensures every order_date has a match in our dim_date
+          # Updated to dbt 2.0 syntax: arguments block is now required
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+      - name: delay_delta
+        description: "The difference between actual and scheduled shipping days. Positive values indicate a delay."
+
+      - name: is_late
+        description: "Boolean flag (True/False) to quickly filter late shipments in reports."
 
       # Adding tests for financials ensures dashboard numbers stay credible.
       - name: sales_amount

@@ -19,8 +19,13 @@ select
     s.shipment_item_id,
     
     s.order_id,
+    
+    -- Date Keys (Casted to Date for Power BI Calendar Relationship)
+    -- We keep the timestamp for detail, but use to_date for the relationship key
     s.order_at,
+    to_date(s.order_at) as order_date, 
     s.shipped_at,
+    to_date(s.shipped_at) as shipped_date,
     
     -- Surrogate Keys (The Glue of the Star Schema)
     -- These link our Fact table to our Dimensions

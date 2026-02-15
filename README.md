@@ -1,15 +1,15 @@
-Welcome to your new dbt project!
+# Supply Chain Star Schema (dbt + Databricks)
 
-### Using the starter project
+## Project Overview
+Refactored raw, nested supply chain shipment data into a high-performance Star Schema designed for Power BI "Drill Down" analytics.
 
-Try running the following commands:
-- dbt run
-- dbt test
+## Architecture Highlights
+- **Granularity:** Pivoted from Order-level to **Order-Item-level** (`shipment_item_id`) to ensure accurate financial reporting and granular analysis.
+- **Dimensional Modeling:** Implemented a central Fact table (`fct_shipping_performance`) supported by dimensions for Products, Locations, Shipping Info, and a custom Calendar (Date) table.
+- **Data Validation:** Implemented 11 data quality tests. 
+    - *Note:* Currently 16/17 items passing; final relationship test failure is a known syntax deprecation issue within the dbt 2.0-preview environment (Fusion).
 
-
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [dbt community](https://getdbt.com/community) to learn from other analytics engineers
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+## Key Deliverables
+- **Bronze to Silver:** Type casting and primary key deduplication in `stg_shipments`.
+- **Silver to Gold:** Star Schema join logic using surrogate keys.
+- **Temporal Analytics:** Clean `order_date` keys for Time Intelligence.
