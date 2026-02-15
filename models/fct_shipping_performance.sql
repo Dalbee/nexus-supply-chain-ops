@@ -1,33 +1,58 @@
 {{ config(materialized='table') }}
 
 with shipments as (
+    -- Bringing in our cleaned staging data which now includes the unique shipment_item_id
     select * from {{ ref('stg_shipments') }}
+),
+products as (
+    select * from {{ ref('dim_products') }}
+),
+locations as (
+    select * from {{ ref('dim_locations') }}
+),
+shipping_info as (
+    select * from {{ ref('dim_shipping_info') }}
 )
 
 select
-    order_id,
-    customer_id,
-    order_at,
-    shipped_at,
-    -- Use the NEW names from your stg_shipments model:
-    actual_shipping_days,
-    scheduled_shipping_days,
+    -- Primary Key for this Fact Table (Grain: One row per line item)
+    s.shipment_item_id,
     
-    -- Business Logic: Calculate the delay
-    (actual_shipping_days - scheduled_shipping_days) as delay_delta,
+    s.order_id,
+    s.order_at,
+    s.shipped_at,
     
-    -- Business Logic: Flag late deliveries
+    -- Surrogate Keys (The Glue of the Star Schema)
+    -- These link our Fact table to our Dimensions
+    p.product_key,
+    l.location_key,
+    si.shipping_key,
+
+    -- Metrics for the Dashboard
+    s.actual_shipping_days,
+    s.scheduled_shipping_days,
+    -- Calculation to determine the variance in days
+    (s.actual_shipping_days - s.scheduled_shipping_days) as delay_delta,
+    
+    -- Booleans for easy filtering in Power BI
+    -- CASE statement creates a simple flag for late shipments
     case 
-        when actual_shipping_days > scheduled_shipping_days then true 
+        when s.actual_shipping_days > s.scheduled_shipping_days then true 
         else false 
     end as is_late,
 
-    delivery_status,
-    shipping_mode,
-    sales_amount,
-    profit_amount,
-    order_country,
-    category_name,
-    product_name
+    -- Financials
+    -- We keep these at the line-item level to allow for accurate summing in BI
+    s.sales_amount,
+    s.profit_amount
 
-from shipments
+from shipments s
+left join products p 
+    on s.product_name = p.product_name 
+    and s.category_name = p.category_name
+left join locations l 
+    on s.order_country = l.order_country 
+    and s.order_region = l.order_region
+left join shipping_info si
+    on s.delivery_status = si.delivery_status
+    and s.shipping_mode = si.shipping_mode

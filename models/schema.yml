@@ -2,8 +2,34 @@ version: 2
 
 models:
   - name: stg_shipments
+    description: "Cleaned shipment data from the raw source"
     columns:
-      - name: order_id
+      # Shifted 'unique' test to shipment_item_id to support order drill-downs.
+      # This ensures we don't fail tests when one order contains multiple products.
+      - name: shipment_item_id
+        description: "Primary key for the line item (Order Item Id). Ensures uniqueness at the most granular level."
         tests:
           - unique
+          - not_null
+
+      - name: order_id
+        description: "Primary key for the order"
+        tests:
+          # Removed 'unique' because multiple products share one Order ID.
+          # We keep 'not_null' to ensure every record is linked to a valid transaction.
+          - not_null
+
+  - name: fct_shipping_performance
+    description: "The central fact table for shipping metrics"
+    columns:
+      - name: shipment_item_id
+        description: "Foreign key linking back to staging, ensuring every fact row is traceable."
+        tests:
+          - unique
+          - not_null
+
+      # Adding tests for financials ensures dashboard numbers stay credible.
+      - name: sales_amount
+        description: "Total revenue for the specific line item."
+        tests:
           - not_null
