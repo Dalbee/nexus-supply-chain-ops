@@ -1,79 +1,82 @@
 version: 2
 
 models:
-  - name: stg_shipments
-    description: "Cleaned shipment data from the raw source"
+  - name: int_shipments
+    description: "Silver Layer: Cleaned and unified shipment data with pre-calculated surrogate keys."
     columns:
-      # Shifted 'unique' test to shipment_item_id to support order drill-downs.
-      # This ensures we don't fail tests when one order contains multiple products.
       - name: shipment_item_id
-        description: "Primary key for the line item (Order Item Id). Ensures uniqueness at the most granular level."
         tests:
           - unique
           - not_null
-
-      - name: order_id
-        description: "Primary key for the order"
+      - name: product_key
         tests:
-          # Removed 'unique' because multiple products share one Order ID.
-          # We keep 'not_null' to ensure every record is linked to a valid transaction.
           - not_null
 
   - name: dim_date
-    description: "Standardized calendar dimension for Time Intelligence analytics."
+    description: "Standardized calendar dimension."
     columns:
       - name: date_key
-        description: "Primary key (Date) for the calendar table."
         tests:
           - unique
           - not_null
 
   - name: dim_products
-    description: "Dimension table containing product and category details."
     columns:
       - name: product_key
-        description: "Surrogate key for unique products."
         tests:
           - unique
           - not_null
 
   - name: dim_locations
-    description: "Dimension table for geographical order data."
     columns:
       - name: location_key
-        description: "Surrogate key for unique country/region combinations."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_shipping_info
+    columns:
+      - name: shipping_key
         tests:
           - unique
           - not_null
 
   - name: fct_shipping_performance
-    description: "The central fact table for shipping metrics. Grain is one row per line item."
+    description: "Gold Layer: Final fact table optimized for Star Schema reporting."
     columns:
       - name: shipment_item_id
-        description: "Foreign key linking back to staging, ensuring every fact row is traceable."
         tests:
           - unique
           - not_null
 
-      - name: order_date
-        description: "The date the order was placed. Used for Power BI relationships."
+      - name: product_key
         tests:
           - not_null
-          # RELATIONSHIP TEST: Ensures every order_date has a match in our dim_date
-          # Updated to dbt 2.0 syntax: arguments block is now required
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_key
+
+      - name: location_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_locations')
+                field: location_key
+
+      - name: shipping_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_shipping_info')
+                field: shipping_key
+
+      - name: order_date
+        tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('dim_date')
                 field: date_key
-
-      - name: delay_delta
-        description: "The difference between actual and scheduled shipping days. Positive values indicate a delay."
-
-      - name: is_late
-        description: "Boolean flag (True/False) to quickly filter late shipments in reports."
-
-      # Adding tests for financials ensures dashboard numbers stay credible.
-      - name: sales_amount
-        description: "Total revenue for the specific line item."
-        tests:
-          - not_null
