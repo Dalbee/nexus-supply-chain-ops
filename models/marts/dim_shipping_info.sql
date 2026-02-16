@@ -1,7 +1,11 @@
 {{ config(materialized='table') }}
 
+/* We pull from 'int_shipments' where the keys were already generated.
+   Using 'distinct' ensures this table acts as a true reference dimension.
+*/
+
 select distinct
-    {{ dbt_utils.generate_surrogate_key(['delivery_status', 'shipping_mode']) }} as shipping_key,
+    shipping_key,
     delivery_status,
     shipping_mode
-from {{ ref('stg_shipments') }}
+from {{ ref('int_shipments') }}

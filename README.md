@@ -1,49 +1,78 @@
-# Supply Chain Star Schema (dbt + Databricks)
+# Supply Chain Star Schema: End-to-End Medallion Pipeline (dbt + Databricks)
 
-## Project Overview
-Refactored raw, nested supply chain shipment data into a high-performance Star Schema designed for Power BI "Drill Down" analytics. This project demonstrates a full-stack ELT pipeline from a Databricks Unified Data Analytics platform to a structured dbt modeling layer.
+## 📊 Project Overview
+This repository contains a high-performance Data Engineering pipeline that refactors raw, nested supply chain shipment data into an optimized **Star Schema**. Designed specifically for Power BI "Drill Down" analytics, the project utilizes the **Medallion Architecture** (Bronze, Silver, Gold) to ensure "Zero-Defect" reporting and full data traceability.
 
-## Infrastructure & Setup
+### Final Architecture (Lineage)
+The pipeline transitions from a flat transactional stream to a convergent Star Schema, ensuring that the Fact table is fully validated against tested Dimensions.
+
+
+
+---
+
+## 🏗️ Infrastructure & Setup
 
 ### 1. Databricks Warehouse Configuration
-To establish the connection between dbt and the Databricks SQL Warehouse:
-* **SQL Warehouse:** Created a "Pro" SQL Warehouse in Databricks to handle compute for dbt-fusion workloads.
-* **Server Hostname:** Obtained from the 'Connection Details' tab of the SQL Warehouse in the Databricks UI.
-* **HTTP Path:** Configured the unique cluster path (e.g., `/sql/1.0/warehouses/...`) in the dbt connection settings to route queries directly to the compute instance.
-* **Authentication:** Generated a **Personal Access Token (PAT)** via Databricks User Settings to securely authorize the dbt service account.
+The compute layer is hosted on Databricks to leverage Delta Lake's performance:
+* **SQL Warehouse:** A "Pro" SQL Warehouse was provisioned to handle compute for `dbt-fusion` workloads.
+* **Server Hostname & HTTP Path:** Configured unique cluster paths (e.g., `/sql/1.0/warehouses/...`) in the dbt `profiles.yml` to route queries directly to the compute instance.
+* **Authentication:** Secured via a **Personal Access Token (PAT)** generated in Databricks User Settings for service-account authorization.
 
 ### 2. dbt Project Initialization
-* **Adapter:** Utilized the `dbt-databricks` adapter for optimized compatibility with Delta Lake.
-* **Schema Strategy:** Defined a custom target schema (e.g., `dbt_shipping_dev`) to isolate development models from raw source data.
-* **Naming Conventions:**
-    * `stg_`: Staging models for light transformation and renaming.
-    * `dim_`: Dimension tables containing descriptive attributes.
-    * `fct_`: Fact tables containing quantitative metrics and surrogate keys.
+* **Adapter:** Utilized `dbt-databricks` for native compatibility with Spark/Delta Lake.
+* **Layer Strategy:**
+    * **Bronze:** Raw Landing (`external_source`) - Preserves original state for reprocessing.
+    * **Silver (`int_shipments`):** Transformation hub for data sanitization, type casting (Decimal/Timestamp), and MD5 surrogate key generation using `dbt_utils`.
+    * **Gold:** Modular Star Schema consumption layer featuring `dim_` tables and the central `fct_` table.
 
-## Architecture Highlights
-- **Granularity:** Pivoted from Order-level to **Order-Item-level** (`shipment_item_id`) to ensure accurate financial reporting and granular analysis.
-- **Dimensional Modeling:** Implemented a central Fact table (`fct_shipping_performance`) supported by dimensions for Products, Locations, Shipping Info, and a custom Calendar (Date) table.
+---
 
-## Data Validation & Test Coverage
-We implemented a multi-layered testing strategy to ensure "Zero-Defect" reporting:
+## 🛠️ Technical Challenges & Resolutions
+
+| Challenge | Resolution |
+| :--- | :--- |
+| **Granularity Mismatch** | Pivoted from Order-level to **Order-Item-level** (`shipment_item_id`) to ensure accurate financial reporting and granular drill-down analysis. |
+| **Missing Master Data** | Implemented **Inferred Dimensions**; extracting and deduplicating unique entities (Products/Locations) directly from the transactional stream. |
+| **dbt 2.0 Syntax Migration** | Migrated generic tests to the new `arguments` block syntax to support `dbt-fusion 2.0-preview` requirements. |
+| **Referential Integrity** | Centralized **Surrogate Key** generation in the Silver layer to ensure 100% key-matching between the Fact table and its Dimensions. |
+
+---
+
+## ✅ Data Quality & "Zero-Defect" Testing
+We implemented a multi-layered testing strategy to ensure dashboard numbers remain credible and "Blank" values are eliminated in BI slicers.
 
 ### 1. Schema Tests (Generic)
-* **Uniqueness:** Applied `unique` tests to `shipment_item_id` in both Staging and Fact layers to prevent row-inflation and duplicate sales reporting.
-* **Null Handling:** Applied `not_null` constraints to all primary keys and critical foreign keys (`product_key`, `location_key`) to ensure referential integrity.
-* **Financial Integrity:** Added `not_null` tests to `sales_amount` and `profit_amount` to ensure dashboard metrics are always credible.
+* **Uniqueness & Null Handling:** Applied `unique` and `not_null` tests to `shipment_item_id` and all surrogate keys to prevent row-inflation and duplicate sales reporting.
+* **Financial Integrity:** Hardened metrics with `not_null` constraints on `sales_amount` and `profit_amount`.
 
 ### 2. Referential Integrity (Relationship Tests)
-* **Date Validation:** Implemented a `relationships` test between `fct_shipping_performance.order_date` and `dim_date.date_key`. This ensures every transaction is linked to a valid date in the calendar, preventing "Blank" values in Power BI time slicers.
-* **dbt 2.0 Compliance:** Migrated relationship tests to the new `arguments` block syntax to support dbt-fusion 2.0-preview requirements.
+To support dbt 2.0 standards, all relationship tests use the new `arguments` pattern:
 
+```yaml
+# Example: Product Dimension Relationship Test
+- name: product_key
+  tests:
+    - relationships:
+        arguments:
+          to: ref('dim_products')
+          field: product_key
+```
+---
 
+## 💡 Lessons Learned
+* **Upstream Key Generation:** Moving surrogate key generation to the Silver layer (`int_shipments`) made the code "DRY" (Don't Repeat Yourself) and eliminated data fan-out during Gold-layer joins.
+* **Lineage Convergence:** Restructuring `ref()` logic transformed the lineage from parallel, disconnected tables into a **convergent star schema**, where the Fact table explicitly depends on validated Dimensions.
+* **Temporal Analytics:** Created a `dim_date` table and standardized `order_date` keys in the fact table to support Power BI Time Intelligence and prevent "Blank" values in report slicers.
 
-## Key Deliverables
-- **Bronze to Silver:** Applied schema-on-read logic, explicit type casting (Decimal/Timestamp), and primary key deduplication in `stg_shipments`.
-- **Silver to Gold:** Established Star Schema join logic using surrogate keys to eliminate data fan-out.
-- **Temporal Analytics:** Created a `dim_date` table and standardized `order_date` keys in the fact table to support Power BI Time Intelligence.
+---
 
-## How to Run
-1. Ensure your Databricks SQL Warehouse is **Running**.
-2. Run `dbt deps` to install required packages.
-3. Run `dbt build` to execute models and run data quality tests simultaneously.
+## 🚀 How to Run
+1. **Ensure Infrastructure is Active:** Verify that your Databricks SQL Warehouse is currently **Running**.
+2. **Install Required Packages:** Run the following command to install dependencies like `dbt_utils`:
+   ```bash
+   dbt deps
+   ```
+3. **Build and Test:** Execute all models and run data quality tests simultaneously to ensure a "Zero-Defect" deployment: 
+    ```bash
+    dbt build
+    ```
