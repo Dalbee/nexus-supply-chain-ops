@@ -5,21 +5,10 @@ with shipments as (
     select * from {{ ref('int_shipments') }}
 ),
 
-dim_products as (
-    select * from {{ ref('dim_products') }}
-),
-
-dim_locations as (
-    select * from {{ ref('dim_locations') }}
-),
-
-dim_shipping_info as (
-    select * from {{ ref('dim_shipping_info') }}
-),
-
-dim_date as (
-    select * from {{ ref('dim_date') }}
-)
+dim_products as (select * from {{ ref('dim_products') }}),
+dim_locations as (select * from {{ ref('dim_locations') }}),
+dim_shipping_info as (select * from {{ ref('dim_shipping_info') }}),
+dim_date as (select * from {{ ref('dim_date') }})
 
 select
     -- Primary Key for the Fact Table
@@ -30,7 +19,9 @@ select
     p.product_key,
     l.location_key,
     si.shipping_key,
-    d.date_key as order_date_key,
+    
+    -- Safety Net: Ensure the key is never null even if date is out of range for dim_date
+    coalesce(d.date_key, cast(s.order_at as date)) as order_date_key,
 
     -- Dimensional Attributes kept for detail
     s.order_at,
@@ -51,12 +42,8 @@ select
     s.profit_amount
 
 from shipments s
--- Joining to Dimensions ensures referential integrity in your lineage
-left join dim_products p 
-    on s.product_key = p.product_key
-left join dim_locations l 
-    on s.location_key = l.location_key
-left join dim_shipping_info si 
-    on s.shipping_key = si.shipping_key
-left join dim_date d 
-    on to_date(s.order_at) = d.date_key
+-- Joins restore the dbt Lineage Graph
+left join dim_products p on s.product_key = p.product_key
+left join dim_locations l on s.location_key = l.location_key
+left join dim_shipping_info si on s.shipping_key = si.shipping_key
+left join dim_date d on cast(s.order_at as date) = d.date_key

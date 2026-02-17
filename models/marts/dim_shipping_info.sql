@@ -7,5 +7,6 @@
 select distinct
     shipping_key,
     delivery_status,
-    shipping_mode
+    shipping_mode,
+    order_status
 from {{ ref('int_shipments') }}

@@ -11,6 +11,7 @@ renamed_and_cleaned as (
         cast(`Order Id` as string) as order_id,
         
         -- 2. Dates (Standardized to Timestamps)
+        -- Format 'M/d/yyyy H:mm' ensures Spark correctly parses your raw date strings
         to_timestamp(`order date (DateOrders)`, 'M/d/yyyy H:mm') as order_at,
         to_timestamp(`shipping date (DateOrders)`, 'M/d/yyyy H:mm') as shipped_at,
 
@@ -21,6 +22,9 @@ renamed_and_cleaned as (
         `Order Region` as order_region,
         `Delivery Status` as delivery_status,
         `Shipping Mode` as shipping_mode,
+        
+        -- Added Order Status to capture the logical state of the order (e.g., COMPLETE, PENDING)
+        `Order Status` as order_status,
 
         -- 4. Measures
         cast(`Days for shipping (real)` as int) as actual_shipping_days,
@@ -35,5 +39,8 @@ select
     -- Generate keys here so Gold tables can just inherit them
     {{ dbt_utils.generate_surrogate_key(['product_name', 'category_name']) }} as product_key,
     {{ dbt_utils.generate_surrogate_key(['order_country', 'order_region']) }} as location_key,
-    {{ dbt_utils.generate_surrogate_key(['delivery_status', 'shipping_mode']) }} as shipping_key
+    
+    -- Added order_status to the shipping_key. 
+    -- This ensures our Shipping Dimension can track both physical delivery and logical order states.
+    {{ dbt_utils.generate_surrogate_key(['delivery_status', 'shipping_mode', 'order_status']) }} as shipping_key
 from renamed_and_cleaned
