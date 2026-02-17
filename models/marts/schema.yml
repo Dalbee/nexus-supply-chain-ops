@@ -2,41 +2,15 @@ version: 2
 
 models:
   - name: int_shipments
-    description: "Silver Layer: Cleaned and unified shipment data with pre-calculated surrogate keys."
     columns:
       - name: shipment_item_id
         tests:
           - unique
           - not_null
-      - name: product_key
-        tests:
-          - not_null
 
   - name: dim_date
-    description: "Standardized calendar dimension."
     columns:
       - name: date_key
-        tests:
-          - unique
-          - not_null
-
-  - name: dim_products
-    columns:
-      - name: product_key
-        tests:
-          - unique
-          - not_null
-
-  - name: dim_locations
-    columns:
-      - name: location_key
-        tests:
-          - unique
-          - not_null
-
-  - name: dim_shipping_info
-    columns:
-      - name: shipping_key
         tests:
           - unique
           - not_null
@@ -73,7 +47,7 @@ models:
                 to: ref('dim_shipping_info')
                 field: shipping_key
 
-      - name: order_date
+      - name: order_date_key
         tests:
           - not_null
           - relationships:

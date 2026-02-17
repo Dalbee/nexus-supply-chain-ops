@@ -1,8 +1,8 @@
 {{ config(materialized='table') }}
 
 with date_spine as (
-    -- Generates a list of dates. Adjust the start/end years as needed for your data.
-    select explode(sequence(to_date('2020-01-01'), to_date('2026-12-31'), interval 1 day)) as date_day
+    -- Continuous date range to prevent gaps in Power BI Time Intelligence
+    select explode(sequence(to_date('2015-01-01'), to_date('2026-12-31'), interval 1 day)) as date_day
 )
 
 select
