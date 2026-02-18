@@ -27,6 +27,32 @@ The compute layer is hosted on Databricks to leverage Delta Lake's performance:
 
 ---
 
+## 📈 Business Intelligence & Analysis (The "So What?")
+While the engineering layer ensures data integrity, the Power BI layer translates these bits into **Executive Strategy**.
+
+### **1. SLA Gap Discovery (Root Cause Analysis)**
+A primary discovery of this project was the **Logistics Strategy Mismatch**. By calculating the delta between "Scheduled" and "Real" shipping days, the dashboard identifies that high late rates are often a result of unrealistic policy settings rather than warehouse failure.
+
+| Shipping Mode | Promised SLA | Actual Avg | Business Insight |
+| :--- | :--- | :--- | :--- |
+| **Same Day** | 0 Days | **0.48 Days** | **High Efficiency:** Successful local fulfillment despite 0-day target. |
+| **First Class** | 1 Day | **2.00 Days** | **Policy Error:** 1-day SLA is unachievable with current carrier networks. |
+| **Second Class**| 2 Days | **3.99 Days** | **Critical Gap:** Highest variance; suggests transit bottlenecks. |
+| **Standard** | 4 Days | **4.00 Days** | **Perfectly Aligned:** Effective use of "Under-promise, Over-deliver." |
+
+### **2. Performance Metrics (DAX Engineering)**
+* **Perfect Order Rate:** Intersection of profitability and reliability (Orders where `Profit > 0` AND `Late = 0`).
+* **SLA Variance:** A dynamic measure calculating `[Real Days] - [Scheduled Days]` to highlight efficiency leaks.
+* **Recoverable Revenue (What-If):** A parameter-driven forecast showing how much revenue is protected if late rates improve by a user-defined percentage.
+
+---
+
+## 🖥️ Interactive Dashboard Features
+* **Dynamic Ops Narrative:** A DAX-powered text summary that automatically updates based on **Shipping Mode**, **Year**, and **Order Status** filters.
+* **Contextual Tooltips:** Hovering over a shipping mode triggers an **SLA Analysis Tooltip**, visualizing the gap between the promise and the reality.
+* **Performance Signaling:** A color-coded status icon (🟢/🟡/🔴) that flags logistics health based on current `Late Sales %` thresholds.
+---
+
 ## 🛠️ Technical Challenges & Resolutions
 
 | Challenge | Resolution |
@@ -36,6 +62,7 @@ The compute layer is hosted on Databricks to leverage Delta Lake's performance:
 | **dbt 2.0 Syntax Migration** | Migrated generic tests to the new `arguments` block syntax to support `dbt-fusion 2.0-preview` requirements and strict YAML parsing. |
 | **Date Range Gaps** | Implemented a **Coalesce Safety Net** in the Gold layer. If a shipment date falls outside the `dim_date` range, the pipeline falls back to the transactional date rather than returning a `NULL`, preventing report "leakage." |
 | **Referential Integrity** | Centralized **Surrogate Key** generation in the Silver layer to ensure 100% key-matching across the entire pipeline. |
+| **SLA False Positives** | Standardized `order_status` logic to ignore 'Cancelled' orders in performance metrics. |
 ---
 
 ## ✅ Data Quality & "Zero-Defect" Testing
@@ -64,6 +91,8 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
 * **Dimensional Expansion:** Added `Order Status` (Logical state) alongside `Delivery Status` (Physical state) into dim_shipping_info to provide a 360-degree view of the shipping lifecycle.
 * **Lineage Convergence:** Restructuring `ref()` logic transformed the lineage from parallel, disconnected tables into a **convergent star schema**, where the Fact table explicitly depends on validated Dimensions.
 * **Temporal Analytics:** Created a `dim_date` table and standardized `order_date` keys in the fact table to support Power BI Time Intelligence and prevent "Blank" values in report slicers.
+* **Contextual Narratives:** Users prefer "Automated Analysis" over "Static Charts."
+* **Correlation Awareness:** Analyzing `Late Rate` alongside `Cancellation Rate` revealed that logistics delays are a primary driver of lost revenue.
 
 ---
 
