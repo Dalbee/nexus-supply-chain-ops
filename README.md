@@ -15,7 +15,7 @@ This repository contains a high-performance Data Engineering pipeline that refac
 The pipeline transitions from a flat transactional stream to a convergent Star Schema, ensuring that the Fact table is fully validated against tested Dimensions.
 
 
-![dbt Lineage Graph](./snapshots/dbt_lineage.png)
+![dbt Lineage Graph](./snapshots/Nexus_Bronze_Silver_Gold_Medallion_dbt.png)
 
 * **Bronze:** Raw landing zone.
 * **Silver:** `int_shipments` Transformation hub using MD5 surrogate keys.
