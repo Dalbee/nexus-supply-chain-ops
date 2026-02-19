@@ -1,6 +1,6 @@
 # Nexus: Supply Chain Intelligence Lakehouse: End-to-End Medallion Pipeline (dbt + Databricks + Power BI)
 
-![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_1.png)
+![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_2.png)
 > **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
 ---
