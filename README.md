@@ -142,7 +142,8 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
 ```
 
 ### 3. Logic Validation
-Hardened measures to exclude non-realized revenue streams.
+* **Metric Decoupling:** * **Financial KPIs (Sales/Profit):** Hardened to include only `COMPLETE` and `CLOSED` statuses (measures to exclude non-realized revenue streams).
+    * **Operational KPIs (Avg Days):** Includes all statuses to capture true logistics bottlenecks.
 ---
 
 ## 💡 Lessons Learned
