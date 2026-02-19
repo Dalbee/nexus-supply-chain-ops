@@ -1,19 +1,27 @@
 # Nexus: Supply Chain Intelligence Lakehouse: End-to-End Medallion Pipeline (dbt + Databricks + Power BI)
 
-![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_2.png)
-> **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
+## 📊 Project Overview
+This repository contains a high-performance Data Engineering pipeline that refactors raw, nested supply chain shipment data into an optimized **Star Schema**. Designed specifically for Power BI "Drill Down" analytics, the project utilizes the **Medallion Architecture** (Bronze, Silver, Gold) to ensure "Zero-Defect" reporting and full data traceability.
 
 ---
 
-## 📊 Project Overview
-This repository contains a high-performance Data Engineering pipeline that refactors raw, nested supply chain shipment data into an optimized **Star Schema**. Designed specifically for Power BI "Drill Down" analytics, the project utilizes the **Medallion Architecture** (Bronze, Silver, Gold) to ensure "Zero-Defect" reporting and full data traceability.
+![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_2.png)
+> **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
 
 ## 🏗️ Infrastructure & Data Engineering
 
-### 1. dbt Medallion Pipeline (Lineage)
+### 1. Data Source: DataCo Global Dataset
+The pipeline is fueled by the **DataCo Smart Supply Chain** dataset, a robust collection of over **180,000 records** covering:
+* **Structured Data:** Transactional logs (sales, profit, shipping days).
+* **Unstructured Data:** Tokenized clickstream access logs for advanced correlation.
+* **Key Dimensions:** 53 variables covering Provisioning, Production, Sales, and Distribution across categories like Clothing, Sports, and Electronics.
+
+### 2. dbt Medallion Pipeline (Lineage)
+
 The pipeline transitions from a flat transactional stream to a convergent Star Schema, ensuring that the Fact table is fully validated against tested Dimensions.
 
+Hosted on **Databricks**, the transformation layer uses dbt to move data through three distinct zones:
 
 ![dbt Lineage Graph](./snapshots/Nexus_Bronze_Silver_Gold_Medallion_dbt.png)
 
@@ -166,3 +174,9 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
     ```bash
     dbt build
     ```
+
+
+## 🚀 Live Interaction
+* **[🔗 View Live Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiOGZlYThiMmQtNmMxZC00MGRiLWEwOTAtOGFiOTlmNWNjMjQ4IiwidCI6Ijk1N2VlNTFkLWZkOTktNGNjZC1iOGUxLTZlMDE0MjE3NzM3ZiIsImMiOjh9)**
+* **[📁 Project Repository](https://github.com/Dalbee/nexus-supply-chain-ops.git)**
+* **[📊 Data Source (Kaggle)](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis)**
