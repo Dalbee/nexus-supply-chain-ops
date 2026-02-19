@@ -3,6 +3,8 @@
 ## 📊 Project Overview
 This repository contains a high-performance Data Engineering pipeline that refactors raw, nested supply chain shipment data into an optimized **Star Schema**. Designed specifically for Power BI "Drill Down" analytics, the project utilizes the **Medallion Architecture** (Bronze, Silver, Gold) to ensure "Zero-Defect" reporting and full data traceability.
 
+![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_2.png)
+> **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
 ## 🏗️ Infrastructure & Data Engineering
 
