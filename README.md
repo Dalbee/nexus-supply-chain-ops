@@ -1,6 +1,6 @@
 # Nexus: Supply Chain Intelligence Lakehouse: End-to-End Medallion Pipeline (dbt + Databricks + Power BI)
 
-![Project Header](.snapshots/dashboard_header.png)
+![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_1.png)
 > **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
 ---
@@ -43,6 +43,11 @@ The compute layer is hosted on Databricks to leverage Delta Lake's performance:
 While the engineering layer ensures data integrity, the Power BI layer translates these bits into **Executive Strategy**.
 
 ### **1. The Profitability Matrix (Risk vs. Reward Quadrant)**
+
+This quadrant analysis identifies exactly where logistics failures are eroding high-value margins.
+
+![Profitability Matrix](./snapshots/profitability_matrix.png)
+
 To go beyond simple averages, I engineered a **Profitability Matrix** that plots categories/regions into four distinct quadrants. This allows executives to see exactly where margin is being eroded by logistics failures.
 
 * **High Profit / Low Late Rate (Green):** "The Gold Standard" — Efficient regions to be used as internal benchmarks.
@@ -66,6 +71,10 @@ To ensure the integrity of the Profit Bridge, I implemented a strict **Metric De
 * **Operational KPIs (Avg Days/Late Rate):** Includes all statuses (excluding Fraud) to ensure root causes for cancellations or delays are not hidden by success-only filtering.
 
 ### **4. Prescriptive Financial Modeling (The Profit Bridge)**
+Instead of just reporting past performance, this project models future recovery. The Waterfall Bridge calculates how much "Revenue at Risk" can be reclaimed through SLA improvements.
+
+![Profit Bridge Waterfall](./snapshots/waterfall_bridge.png)
+
 Using a custom-engineered **Waterfall Bridge**, the report models the path from Current Profit to Target Profit.
 * **Revenue at Risk:** Quantifies the total sales volume tied to "Late Delivery" orders.
 * **SLA Recovery Simulation ("What-If"):** A parameter-driven forecast showing margin reclamation based on a user-defined improvement percentage (0% - 100%).
@@ -76,6 +85,10 @@ Using a custom-engineered **Waterfall Bridge**, the report models the path from 
 ## 🖥️ Advanced Dashboard & UI/UX Features
 
 ### **1. Intelligent Strategic Narratives**
+The "Voice of the Dashboard" provides real-time analysis based on active filters and simulation parameters.
+
+![Smart Narrative View](./snapshots/narrative_detail.png)
+
 I implemented a **Context-Aware Smart Narrative** that serves as the "Voice of the Dashboard." This DAX-driven narrative:
 * Recognizes active filters for **Year**, **Shipping Mode**, and **Order Status**.
 * Interprets the "What-If" simulation, categorizing strategies as "Conservative," "Moderate," or "Aggressive."
