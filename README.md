@@ -3,6 +3,10 @@
 ![Project Header](.snapshots/dashboard_header.png)
 > **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
+### Architecture Breakdown
+* **Bronze:** `external_source.raw_supply_chain`
+* **Silver:** `int_shipments` and downstream dimensions.
+* **Gold:** `fct_shipping_performance`
 ---
 
 ## 📊 Project Overview
@@ -12,6 +16,16 @@ This repository contains a high-performance Data Engineering pipeline that refac
 The pipeline transitions from a flat transactional stream to a convergent Star Schema, ensuring that the Fact table is fully validated against tested Dimensions.
 
 
+* **Bronze:** Raw landing zone.
+* **Silver:** `int_shipments` Transformation hub using MD5 surrogate keys.
+* **Gold:** Consumption layer with `fct_shipping_performance` and modular dimensions.
+
+## 🏗️ Infrastructure & Data Engineering
+
+### 1. dbt Medallion Pipeline (Lineage)
+The pipeline transitions from a flat transactional stream to a convergent Star Schema. 
+
+![dbt Lineage Graph](./images/dbt_lineage.png)
 
 ---
 
