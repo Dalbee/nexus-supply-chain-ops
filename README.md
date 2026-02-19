@@ -8,6 +8,14 @@ This repository contains a high-performance Data Engineering pipeline that refac
 ![Project Header](./snapshots/dashboard_header_1.png) ![Project Header](./snapshots/dashboard_header_2.png)
 > **Executive Summary:** A high-performance Data Engineering pipeline refactoring raw shipment data into a Star Schema, featuring prescriptive financial modeling and automated strategic narratives.
 
+---
+
+## 🚀 Live Interaction
+* **[🔗 View Live Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiOGZlYThiMmQtNmMxZC00MGRiLWEwOTAtOGFiOTlmNWNjMjQ4IiwidCI6Ijk1N2VlNTFkLWZkOTktNGNjZC1iOGUxLTZlMDE0MjE3NzM3ZiIsImMiOjh9)**
+* **[📁 Project Repository](https://github.com/Dalbee/nexus-supply-chain-ops.git)**
+* **[📊 Data Source (Kaggle)](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis)**
+
+---
 
 ## 🏗️ Infrastructure & Data Engineering
 
@@ -176,7 +184,3 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
     ```
 
 
-## 🚀 Live Interaction
-* **[🔗 View Live Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiOGZlYThiMmQtNmMxZC00MGRiLWEwOTAtOGFiOTlmNWNjMjQ4IiwidCI6Ijk1N2VlNTFkLWZkOTktNGNjZC1iOGUxLTZlMDE0MjE3NzM3ZiIsImMiOjh9)**
-* **[📁 Project Repository](https://github.com/Dalbee/nexus-supply-chain-ops.git)**
-* **[📊 Data Source (Kaggle)](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis)**
