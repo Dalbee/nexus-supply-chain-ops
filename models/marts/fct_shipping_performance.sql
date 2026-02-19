@@ -37,6 +37,12 @@ select
         else false 
     end as is_late,
 
+    -- Quantitative flag for Power BI DAX (Late = 1, On-time = 0)
+    case 
+        when s.actual_shipping_days > s.scheduled_shipping_days then 1 
+        else 0 
+    end as late_delivery_risk,
+
     -- Financial Measures
     s.sales_amount,
     s.profit_amount
