@@ -1,0 +1,13 @@
+# Force dbt SQL files to be detectable
+*.sql linguist-detectable=true
+*.sql linguist-language=SQL
+
+# Force Power BI metadata/TMDL to be counted as code
+*.tmdl linguist-detectable=true
+*.tmdl linguist-language=Power-BI-Config
+
+# If you want YAML (dbt configs) to show up in the bar
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
