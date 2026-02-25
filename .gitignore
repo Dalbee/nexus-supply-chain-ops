@@ -4,3 +4,14 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+
+# Ignore specific dashboard/theme configuration files
+Supply_Chain_Command_Center.json
+
+# Exclude Power BI binary files
+*.pbix
+*.pbit
+
+# Optional: Exclude local user settings
+*.pbiuser
+*.pbiproj.user
