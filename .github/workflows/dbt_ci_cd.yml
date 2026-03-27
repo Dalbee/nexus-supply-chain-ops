@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -24,5 +24,27 @@ jobs:
           pip install dbt-databricks
           dbt deps
 
-      - name: Verify dbt Project
-        run: dbt parse # This checks if your YAML and SQL are valid without needing the database
+      - name: Authenticate and Debug
+        env:
+          DBT_HOST: ${{ secrets.DBT_HOST }}
+          DBT_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
+          DBT_TOKEN: ${{ secrets.DBT_TOKEN }}
+        run: |
+          # We create a temporary profile for the CI runner
+          mkdir -p ~/.dbt
+          echo "nexus_supply_chain:
+            outputs:
+              dev:
+                type: databricks
+                catalog: workspace
+                schema: supply_chain_analytics
+                host: $DBT_HOST
+                http_path: $DBT_HTTP_PATH
+                token: $DBT_TOKEN
+                threads: 1
+            target: dev" > ~/.dbt/profiles.yml
+
+      - name: dbt Debug & Parse
+        run: |
+          dbt debug # Tests the connection to Databricks
+          dbt parse # Validates the SQL and Lineage
