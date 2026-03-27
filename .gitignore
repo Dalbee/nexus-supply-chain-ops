@@ -1,17 +1,36 @@
+# --- Virtual Environments ---
+# Crucial: Don't push your local python environment to GitHub
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# --- dbt Artifacts ---
 # you shouldn't commit these into source control
 # these are the default directory names, adjust/add to fit your needs
 target/
 dbt_packages/
 logs/
-dbt_internal_packages/
+dbt_modules/
 
+# --- Power BI & Dashboards ---
 # Ignore specific dashboard/theme configuration files
-Supply_Chain_Command_Center.json
-
+Supply_Chain_Command_Center.json 
 # Exclude Power BI binary files
 *.pbix
 *.pbit
-
 # Optional: Exclude local user settings
 *.pbiuser
 *.pbiproj.user
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+
+# --- Security & Credentials ---
+# Never commit your Databricks tokens or host details
+profiles.yml
+.dbt/
+*.env

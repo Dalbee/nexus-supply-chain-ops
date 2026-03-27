@@ -1,8 +1,8 @@
-name: 'nexus-supply-chain-ops'
+name: 'nexus_supply_chain_ops'  # Changed - to _
 version: '1.0.0'
 config-version: 2
 
-profile: 'default'
+profile: 'nexus_supply_chain_ops'  # Changed from 'default'
 
 model-paths: ["models"]
 macro-paths: ["macros"]
@@ -12,14 +12,11 @@ vars:
   catalog: workspace
 
 models:
-  nexus-supply-chain-ops:
+  nexus_supply_chain_ops:
     +catalog: workspace
-    +database: workspace
     +schema: supply_chain_analytics
 
-# Add this section to force tests to look in the same place
 tests:
-  nexus-supply-chain-ops:
+  nexus_supply_chain_ops:
     +catalog: workspace
-    +database: workspace
     +schema: supply_chain_analytics

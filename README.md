@@ -38,13 +38,19 @@ Hosted on **Databricks**, the transformation layer uses dbt to move data through
 * **Gold:** Consumption layer with `fct_shipping_performance` and modular dimensions.
 ---
 
+### 3. Automated Orchestration (Apache Airflow)
+To transition from a manual "Local Project" to a production-ready **Data Platform**, I implemented a Python-based **Airflow DAG** (`nexus_supply_chain_dag.py`). This orchestrates the entire lifecycle:
+* **Dependency Management:** Automated `dbt deps` to align environment packages.
+* **Gold Layer Execution:** Target-specific `dbt run` for the shipping performance marts.
+* **Quality Gates:** Automated `dbt test` suite that must pass before data is marked as "Ready" for Power BI, ensuring a "Zero-Defect" environment.
+
 ## 🏗️ Infrastructure & Setup
 
-### 1. Databricks Warehouse Configuration
-The compute layer is hosted on Databricks to leverage Delta Lake's performance:
-* **SQL Warehouse:** A "Pro" SQL Warehouse was provisioned to handle compute for `dbt-fusion` workloads.
-* **Server Hostname & HTTP Path:** Configured unique cluster paths (e.g., `/sql/1.0/warehouses/...`) in the dbt `profiles.yml` to route queries directly to the compute instance.
-* **Authentication:** Secured via a **Personal Access Token (PAT)** generated in Databricks User Settings for service-account authorization.
+### 1. Databricks Warehouse Configuration & Security
+The compute layer is hosted on **Databricks Unity Catalog** to leverage enterprise governance:
+* **SQL Warehouse:** A Pro-tier Warehouse handles the `dbt-databricks` workloads.
+* **Authentication:** Secured via **Personal Access Tokens (PAT)**. 
+* **Zero-Footprint Security:** Implemented a strict `.gitignore` policy for `profiles.yml` and environment-based credential management to ensure zero-exposure of Databricks tokens in source control.
 
 ### 2. dbt Project Initialization
 * **Adapter:** Utilized `dbt-databricks` for native compatibility with Spark/Delta Lake.
@@ -135,6 +141,8 @@ Custom Report Page Tooltips provide deep-dive insights without cluttering the ma
 | **Waterfall Alignment** | Used DAX `BLANK()` placeholders to "hide" redundant bars and let the Total column act as the Target. |
 | **Lifecycle Sync** | Validated that `COMPLETE` and `CLOSED` statuses yield identical values, confirming 100% reconciliation. |
 | **KPI Inflation** | Standardized order status logic to prevent non-realized revenue (Cancellations/Fraud) from skewing targets. |
+| **Manual Pipeline Fragility** | Developed an **Airflow DAG** to automate the Medallion sequence and implement automated retries. |
+| **Credential Exposure** | Hardened the repository by implementing a `.gitignore` strategy for `profiles.yml`, ensuring Databricks tokens are never exposed. |
 ---
 
 ## ✅ Data Quality & "Zero-Defect" Testing
