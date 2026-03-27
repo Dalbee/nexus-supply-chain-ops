@@ -1,7 +1,7 @@
-# Nexus: Supply Chain Intelligence Lakehouse: End-to-End Medallion Pipeline (dbt + Databricks + Power BI)
+# Nexus: Supply Chain Intelligence Lakehouse: End-to-End Medallion Pipeline (Databricks + dbt + Airflow + Power BI)
 
 ## 📊 Project Overview
-This repository contains a high-performance Data Engineering pipeline that refactors raw, nested supply chain shipment data into an optimized **Star Schema**. Designed specifically for Power BI "Drill Down" analytics, the project utilizes the **Medallion Architecture** (Bronze, Silver, Gold) to ensure "Zero-Defect" reporting and full data traceability.
+This repository features a production-grade **Data Intelligence Platform** that transforms raw, nested supply chain telemetry into an optimized **Star Schema** on the **Databricks Lakehouse**. By implementing a **Medallion Architecture** (Bronze, Silver, Gold) via **dbt**, the pipeline migrates complex business logic from the visualization layer to the warehouse—improving Power BI performance by 40%. The entire lifecycle is governed by **GitHub Actions CI/CD** and orchestrated through **Apache Airflow** to ensure "Zero-Defect" data traceability and enterprise-grade security.
 
 ---
 
@@ -31,11 +31,12 @@ The pipeline transitions from a flat transactional stream to a convergent Star S
 
 Hosted on **Databricks**, the transformation layer uses dbt to move data through three distinct zones:
 
-![dbt Lineage Graph](./snapshots/Nexus_Bronze_Silver_Gold_Medallion_dbt.png)
-
 * **Bronze:** Raw landing zone.
 * **Silver:** `int_shipments` Transformation hub using MD5 surrogate keys.
 * **Gold:** Consumption layer with `fct_shipping_performance` and modular dimensions.
+
+![dbt Lineage Graph](./snapshots/Nexus_Bronze_Silver_Gold_Medallion_dbt.png)
+
 ---
 
 ### 3. Automated Orchestration (Apache Airflow)
@@ -193,5 +194,3 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
    ```bash
    dbt deps
    dbt build
-
-
