@@ -34,7 +34,7 @@ jobs:
           mkdir -p ~/.dbt
           
           # 2. Generate the profile file using the secrets
-          echo "nexus_supply_chain:
+          echo "nexus_supply_chain_ops:
             outputs:
               dev:
                 type: databricks
