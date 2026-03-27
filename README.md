@@ -44,6 +44,12 @@ To transition from a manual "Local Project" to a production-ready **Data Platfor
 * **Gold Layer Execution:** Target-specific `dbt run` for the shipping performance marts.
 * **Quality Gates:** Automated `dbt test` suite that must pass before data is marked as "Ready" for Power BI, ensuring a "Zero-Defect" environment.
 
+### 4. CI/CD & Data Governance (GitHub Actions)
+To ensure "Production-Grade" stability, the repository includes an automated **CI/CD Pipeline**:
+* **Automated Testing:** Every `git push` triggers a GitHub Action that installs dependencies and runs `dbt parse` to validate code integrity.
+* **Secret Management:** Utilizes **GitHub Secrets** to securely inject Databricks credentials into the CI environment, ensuring no sensitive tokens are ever exposed in source code.
+* **Version Control:** Adheres to SDLC best practices with formal **v2.0 Release Tags**.
+
 ## 🏗️ Infrastructure & Setup
 
 ### 1. Databricks Warehouse Configuration & Security
@@ -142,7 +148,7 @@ Custom Report Page Tooltips provide deep-dive insights without cluttering the ma
 | **Lifecycle Sync** | Validated that `COMPLETE` and `CLOSED` statuses yield identical values, confirming 100% reconciliation. |
 | **KPI Inflation** | Standardized order status logic to prevent non-realized revenue (Cancellations/Fraud) from skewing targets. |
 | **Manual Pipeline Fragility** | Developed an **Airflow DAG** to automate the Medallion sequence and implement automated retries. |
-| **Credential Exposure** | Hardened the repository by implementing a `.gitignore` strategy for `profiles.yml`, ensuring Databricks tokens are never exposed. |
+| **Credential Exposure** | Implemented **GitHub Secrets** and a strict `.gitignore` strategy for `profiles.yml`, ensuring Databricks tokens are never exposed. |
 ---
 
 ## ✅ Data Quality & "Zero-Defect" Testing
@@ -182,13 +188,10 @@ To support dbt 2.0 standards, all relationship tests use the new `arguments` pat
 
 ## 🚀 How to Run
 1. **Ensure Infrastructure is Active:** Verify that your Databricks SQL Warehouse is currently **Running**.
-2. **Install Required Packages/Dependencies:** Run the following command to install dependencies like `dbt_utils`:
+2. **Secrets:** Configure `DBT_HOST`, `DBT_HTTP_PATH`, and `DBT_TOKEN` in your environment or GitHub Secrets.
+3. **Build:** Execute the full pipeline:
    ```bash
    dbt deps
-   ```
-3. **Build and Test:** Execute all models and run data quality tests simultaneously to ensure a "Zero-Defect" deployment: 
-    ```bash
-    dbt build
-    ```
+   dbt build
 
 

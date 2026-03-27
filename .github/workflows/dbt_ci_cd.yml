@@ -34,7 +34,8 @@ jobs:
           mkdir -p ~/.dbt
           
           # 2. Generate the profile file using the secrets
-          echo "nexus_supply_chain_ops:
+          # Match the ID character-for-character with dbt_project.yml
+          echo "nexus_supply_chain_ops: 
             outputs:
               dev:
                 type: databricks
