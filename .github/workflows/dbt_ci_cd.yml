@@ -24,14 +24,16 @@ jobs:
           pip install dbt-databricks
           dbt deps
 
-      - name: Authenticate and Debug
+      - name: Authenticate and Verify
         env:
           DBT_HOST: ${{ secrets.DBT_HOST }}
           DBT_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
           DBT_TOKEN: ${{ secrets.DBT_TOKEN }}
         run: |
-          # We create a temporary profile for the CI runner
+          # 1. Create the directory
           mkdir -p ~/.dbt
+          
+          # 2. Generate the profile file using the secrets
           echo "nexus_supply_chain:
             outputs:
               dev:
@@ -43,8 +45,7 @@ jobs:
                 token: $DBT_TOKEN
                 threads: 1
             target: dev" > ~/.dbt/profiles.yml
-
-      - name: dbt Debug & Parse
-        run: |
-          dbt debug # Tests the connection to Databricks
-          dbt parse # Validates the SQL and Lineage
+          
+          # 3. Run dbt commands in the SAME step so the environment is shared
+          dbt debug --profiles-dir ~/.dbt
+          dbt parse --profiles-dir ~/.dbt
