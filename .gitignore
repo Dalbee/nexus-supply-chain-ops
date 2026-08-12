@@ -34,3 +34,4 @@ Thumbs.db
 profiles.yml
 .dbt/
 *.env
+dbt_internal_packages/
